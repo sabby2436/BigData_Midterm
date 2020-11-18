@@ -1,0 +1,604 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pyspark.sql import SparkSession\n",
+    "\"\"\n",
+    "spark = SparkSession\\\n",
+    "        .builder\\\n",
+    "        .appName(\"HDFailureStats\")\\\n",
+    "        .getOrCreate()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "root\n",
+      " |-- date: string (nullable = true)\n",
+      " |-- serial_number: string (nullable = true)\n",
+      " |-- model: string (nullable = true)\n",
+      " |-- capacity_bytes: string (nullable = true)\n",
+      " |-- failure: string (nullable = true)\n",
+      " |-- smart_1_normalized: string (nullable = true)\n",
+      " |-- smart_1_raw: string (nullable = true)\n",
+      " |-- smart_2_normalized: string (nullable = true)\n",
+      " |-- smart_2_raw: string (nullable = true)\n",
+      " |-- smart_3_normalized: string (nullable = true)\n",
+      " |-- smart_3_raw: string (nullable = true)\n",
+      " |-- smart_4_normalized: string (nullable = true)\n",
+      " |-- smart_4_raw: string (nullable = true)\n",
+      " |-- smart_5_normalized: string (nullable = true)\n",
+      " |-- smart_5_raw: string (nullable = true)\n",
+      " |-- smart_7_normalized: string (nullable = true)\n",
+      " |-- smart_7_raw: string (nullable = true)\n",
+      " |-- smart_8_normalized: string (nullable = true)\n",
+      " |-- smart_8_raw: string (nullable = true)\n",
+      " |-- smart_9_normalized: string (nullable = true)\n",
+      " |-- smart_9_raw: string (nullable = true)\n",
+      " |-- smart_10_normalized: string (nullable = true)\n",
+      " |-- smart_10_raw: string (nullable = true)\n",
+      " |-- smart_11_normalized: string (nullable = true)\n",
+      " |-- smart_11_raw: string (nullable = true)\n",
+      " |-- smart_12_normalized: string (nullable = true)\n",
+      " |-- smart_12_raw: string (nullable = true)\n",
+      " |-- smart_13_normalized: string (nullable = true)\n",
+      " |-- smart_13_raw: string (nullable = true)\n",
+      " |-- smart_15_normalized: string (nullable = true)\n",
+      " |-- smart_15_raw: string (nullable = true)\n",
+      " |-- smart_16_normalized: string (nullable = true)\n",
+      " |-- smart_16_raw: string (nullable = true)\n",
+      " |-- smart_17_normalized: string (nullable = true)\n",
+      " |-- smart_17_raw: string (nullable = true)\n",
+      " |-- smart_22_normalized: string (nullable = true)\n",
+      " |-- smart_22_raw: string (nullable = true)\n",
+      " |-- smart_23_normalized: string (nullable = true)\n",
+      " |-- smart_23_raw: string (nullable = true)\n",
+      " |-- smart_24_normalized: string (nullable = true)\n",
+      " |-- smart_24_raw: string (nullable = true)\n",
+      " |-- smart_168_normalized: string (nullable = true)\n",
+      " |-- smart_168_raw: string (nullable = true)\n",
+      " |-- smart_170_normalized: string (nullable = true)\n",
+      " |-- smart_170_raw: string (nullable = true)\n",
+      " |-- smart_173_normalized: string (nullable = true)\n",
+      " |-- smart_173_raw: string (nullable = true)\n",
+      " |-- smart_174_normalized: string (nullable = true)\n",
+      " |-- smart_174_raw: string (nullable = true)\n",
+      " |-- smart_177_normalized: string (nullable = true)\n",
+      " |-- smart_177_raw: string (nullable = true)\n",
+      " |-- smart_179_normalized: string (nullable = true)\n",
+      " |-- smart_179_raw: string (nullable = true)\n",
+      " |-- smart_181_normalized: string (nullable = true)\n",
+      " |-- smart_181_raw: string (nullable = true)\n",
+      " |-- smart_182_normalized: string (nullable = true)\n",
+      " |-- smart_182_raw: string (nullable = true)\n",
+      " |-- smart_183_normalized: string (nullable = true)\n",
+      " |-- smart_183_raw: string (nullable = true)\n",
+      " |-- smart_184_normalized: string (nullable = true)\n",
+      " |-- smart_184_raw: string (nullable = true)\n",
+      " |-- smart_187_normalized: string (nullable = true)\n",
+      " |-- smart_187_raw: string (nullable = true)\n",
+      " |-- smart_188_normalized: string (nullable = true)\n",
+      " |-- smart_188_raw: string (nullable = true)\n",
+      " |-- smart_189_normalized: string (nullable = true)\n",
+      " |-- smart_189_raw: string (nullable = true)\n",
+      " |-- smart_190_normalized: string (nullable = true)\n",
+      " |-- smart_190_raw: string (nullable = true)\n",
+      " |-- smart_191_normalized: string (nullable = true)\n",
+      " |-- smart_191_raw: string (nullable = true)\n",
+      " |-- smart_192_normalized: string (nullable = true)\n",
+      " |-- smart_192_raw: string (nullable = true)\n",
+      " |-- smart_193_normalized: string (nullable = true)\n",
+      " |-- smart_193_raw: string (nullable = true)\n",
+      " |-- smart_194_normalized: string (nullable = true)\n",
+      " |-- smart_194_raw: string (nullable = true)\n",
+      " |-- smart_195_normalized: string (nullable = true)\n",
+      " |-- smart_195_raw: string (nullable = true)\n",
+      " |-- smart_196_normalized: string (nullable = true)\n",
+      " |-- smart_196_raw: string (nullable = true)\n",
+      " |-- smart_197_normalized: string (nullable = true)\n",
+      " |-- smart_197_raw: string (nullable = true)\n",
+      " |-- smart_198_normalized: string (nullable = true)\n",
+      " |-- smart_198_raw: string (nullable = true)\n",
+      " |-- smart_199_normalized: string (nullable = true)\n",
+      " |-- smart_199_raw: string (nullable = true)\n",
+      " |-- smart_200_normalized: string (nullable = true)\n",
+      " |-- smart_200_raw: string (nullable = true)\n",
+      " |-- smart_201_normalized: string (nullable = true)\n",
+      " |-- smart_201_raw: string (nullable = true)\n",
+      " |-- smart_218_normalized: string (nullable = true)\n",
+      " |-- smart_218_raw: string (nullable = true)\n",
+      " |-- smart_220_normalized: string (nullable = true)\n",
+      " |-- smart_220_raw: string (nullable = true)\n",
+      " |-- smart_222_normalized: string (nullable = true)\n",
+      " |-- smart_222_raw: string (nullable = true)\n",
+      " |-- smart_223_normalized: string (nullable = true)\n",
+      " |-- smart_223_raw: string (nullable = true)\n",
+      " |-- smart_224_normalized: string (nullable = true)\n",
+      " |-- smart_224_raw: string (nullable = true)\n",
+      " |-- smart_225_normalized: string (nullable = true)\n",
+      " |-- smart_225_raw: string (nullable = true)\n",
+      " |-- smart_226_normalized: string (nullable = true)\n",
+      " |-- smart_226_raw: string (nullable = true)\n",
+      " |-- smart_231_normalized: string (nullable = true)\n",
+      " |-- smart_231_raw: string (nullable = true)\n",
+      " |-- smart_232_normalized: string (nullable = true)\n",
+      " |-- smart_232_raw: string (nullable = true)\n",
+      " |-- smart_233_normalized: string (nullable = true)\n",
+      " |-- smart_233_raw: string (nullable = true)\n",
+      " |-- smart_235_normalized: string (nullable = true)\n",
+      " |-- smart_235_raw: string (nullable = true)\n",
+      " |-- smart_240_normalized: string (nullable = true)\n",
+      " |-- smart_240_raw: string (nullable = true)\n",
+      " |-- smart_241_normalized: string (nullable = true)\n",
+      " |-- smart_241_raw: string (nullable = true)\n",
+      " |-- smart_242_normalized: string (nullable = true)\n",
+      " |-- smart_242_raw: string (nullable = true)\n",
+      " |-- smart_250_normalized: string (nullable = true)\n",
+      " |-- smart_250_raw: string (nullable = true)\n",
+      " |-- smart_251_normalized: string (nullable = true)\n",
+      " |-- smart_251_raw: string (nullable = true)\n",
+      " |-- smart_252_normalized: string (nullable = true)\n",
+      " |-- smart_252_raw: string (nullable = true)\n",
+      " |-- smart_254_normalized: string (nullable = true)\n",
+      " |-- smart_254_raw: string (nullable = true)\n",
+      " |-- smart_255_normalized: string (nullable = true)\n",
+      " |-- smart_255_raw: string (nullable = true)\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# a): Create a single dataframe from all CSV files in the zip, with header information\n",
+    "combined_df = spark.read.format(\"csv\") \\\n",
+    ".option(\"header\", \"true\") \\\n",
+    ".load(\"/Users/sabarnikundu/Downloads/drive_stats_2019_Q1/*.csv\")\n",
+    "\n",
+    "combined_df.printSchema()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['date',\n",
+       " 'serial_number',\n",
+       " 'model',\n",
+       " 'capacity_bytes',\n",
+       " 'failure',\n",
+       " 'smart_1_normalized',\n",
+       " 'smart_1_raw',\n",
+       " 'smart_2_normalized',\n",
+       " 'smart_2_raw',\n",
+       " 'smart_3_normalized',\n",
+       " 'smart_3_raw',\n",
+       " 'smart_4_normalized',\n",
+       " 'smart_4_raw',\n",
+       " 'smart_5_normalized',\n",
+       " 'smart_5_raw',\n",
+       " 'smart_7_normalized',\n",
+       " 'smart_7_raw',\n",
+       " 'smart_8_normalized',\n",
+       " 'smart_8_raw',\n",
+       " 'smart_9_normalized',\n",
+       " 'smart_9_raw',\n",
+       " 'smart_10_normalized',\n",
+       " 'smart_10_raw',\n",
+       " 'smart_11_normalized',\n",
+       " 'smart_11_raw',\n",
+       " 'smart_12_normalized',\n",
+       " 'smart_12_raw',\n",
+       " 'smart_13_normalized',\n",
+       " 'smart_13_raw',\n",
+       " 'smart_15_normalized',\n",
+       " 'smart_15_raw',\n",
+       " 'smart_16_normalized',\n",
+       " 'smart_16_raw',\n",
+       " 'smart_17_normalized',\n",
+       " 'smart_17_raw',\n",
+       " 'smart_22_normalized',\n",
+       " 'smart_22_raw',\n",
+       " 'smart_23_normalized',\n",
+       " 'smart_23_raw',\n",
+       " 'smart_24_normalized',\n",
+       " 'smart_24_raw',\n",
+       " 'smart_168_normalized',\n",
+       " 'smart_168_raw',\n",
+       " 'smart_170_normalized',\n",
+       " 'smart_170_raw',\n",
+       " 'smart_173_normalized',\n",
+       " 'smart_173_raw',\n",
+       " 'smart_174_normalized',\n",
+       " 'smart_174_raw',\n",
+       " 'smart_177_normalized',\n",
+       " 'smart_177_raw',\n",
+       " 'smart_179_normalized',\n",
+       " 'smart_179_raw',\n",
+       " 'smart_181_normalized',\n",
+       " 'smart_181_raw',\n",
+       " 'smart_182_normalized',\n",
+       " 'smart_182_raw',\n",
+       " 'smart_183_normalized',\n",
+       " 'smart_183_raw',\n",
+       " 'smart_184_normalized',\n",
+       " 'smart_184_raw',\n",
+       " 'smart_187_normalized',\n",
+       " 'smart_187_raw',\n",
+       " 'smart_188_normalized',\n",
+       " 'smart_188_raw',\n",
+       " 'smart_189_normalized',\n",
+       " 'smart_189_raw',\n",
+       " 'smart_190_normalized',\n",
+       " 'smart_190_raw',\n",
+       " 'smart_191_normalized',\n",
+       " 'smart_191_raw',\n",
+       " 'smart_192_normalized',\n",
+       " 'smart_192_raw',\n",
+       " 'smart_193_normalized',\n",
+       " 'smart_193_raw',\n",
+       " 'smart_194_normalized',\n",
+       " 'smart_194_raw',\n",
+       " 'smart_195_normalized',\n",
+       " 'smart_195_raw',\n",
+       " 'smart_196_normalized',\n",
+       " 'smart_196_raw',\n",
+       " 'smart_197_normalized',\n",
+       " 'smart_197_raw',\n",
+       " 'smart_198_normalized',\n",
+       " 'smart_198_raw',\n",
+       " 'smart_199_normalized',\n",
+       " 'smart_199_raw',\n",
+       " 'smart_200_normalized',\n",
+       " 'smart_200_raw',\n",
+       " 'smart_201_normalized',\n",
+       " 'smart_201_raw',\n",
+       " 'smart_218_normalized',\n",
+       " 'smart_218_raw',\n",
+       " 'smart_220_normalized',\n",
+       " 'smart_220_raw',\n",
+       " 'smart_222_normalized',\n",
+       " 'smart_222_raw',\n",
+       " 'smart_223_normalized',\n",
+       " 'smart_223_raw',\n",
+       " 'smart_224_normalized',\n",
+       " 'smart_224_raw',\n",
+       " 'smart_225_normalized',\n",
+       " 'smart_225_raw',\n",
+       " 'smart_226_normalized',\n",
+       " 'smart_226_raw',\n",
+       " 'smart_231_normalized',\n",
+       " 'smart_231_raw',\n",
+       " 'smart_232_normalized',\n",
+       " 'smart_232_raw',\n",
+       " 'smart_233_normalized',\n",
+       " 'smart_233_raw',\n",
+       " 'smart_235_normalized',\n",
+       " 'smart_235_raw',\n",
+       " 'smart_240_normalized',\n",
+       " 'smart_240_raw',\n",
+       " 'smart_241_normalized',\n",
+       " 'smart_241_raw',\n",
+       " 'smart_242_normalized',\n",
+       " 'smart_242_raw',\n",
+       " 'smart_250_normalized',\n",
+       " 'smart_250_raw',\n",
+       " 'smart_251_normalized',\n",
+       " 'smart_251_raw',\n",
+       " 'smart_252_normalized',\n",
+       " 'smart_252_raw',\n",
+       " 'smart_254_normalized',\n",
+       " 'smart_254_raw',\n",
+       " 'smart_255_normalized',\n",
+       " 'smart_255_raw']"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# b): Show the dataframe columns\n",
+    "combined_df.columns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+----------+-------------+------------+--------------+-------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+\n",
+      "|      date|serial_number|       model|capacity_bytes|failure|smart_1_normalized|smart_1_raw|smart_2_normalized|smart_2_raw|smart_3_normalized|smart_3_raw|smart_4_normalized|smart_4_raw|smart_5_normalized|smart_5_raw|smart_7_normalized|smart_7_raw|smart_8_normalized|smart_8_raw|smart_9_normalized|smart_9_raw|smart_10_normalized|smart_10_raw|smart_11_normalized|smart_11_raw|smart_12_normalized|smart_12_raw|smart_13_normalized|smart_13_raw|smart_15_normalized|smart_15_raw|smart_16_normalized|smart_16_raw|smart_17_normalized|smart_17_raw|smart_22_normalized|smart_22_raw|smart_23_normalized|smart_23_raw|smart_24_normalized|smart_24_raw|smart_168_normalized|smart_168_raw|smart_170_normalized|smart_170_raw|smart_173_normalized|smart_173_raw|smart_174_normalized|smart_174_raw|smart_177_normalized|smart_177_raw|smart_179_normalized|smart_179_raw|smart_181_normalized|smart_181_raw|smart_182_normalized|smart_182_raw|smart_183_normalized|smart_183_raw|smart_184_normalized|smart_184_raw|smart_187_normalized|smart_187_raw|smart_188_normalized|smart_188_raw|smart_189_normalized|smart_189_raw|smart_190_normalized|smart_190_raw|smart_191_normalized|smart_191_raw|smart_192_normalized|smart_192_raw|smart_193_normalized|smart_193_raw|smart_194_normalized|smart_194_raw|smart_195_normalized|smart_195_raw|smart_196_normalized|smart_196_raw|smart_197_normalized|smart_197_raw|smart_198_normalized|smart_198_raw|smart_199_normalized|smart_199_raw|smart_200_normalized|smart_200_raw|smart_201_normalized|smart_201_raw|smart_218_normalized|smart_218_raw|smart_220_normalized|smart_220_raw|smart_222_normalized|smart_222_raw|smart_223_normalized|smart_223_raw|smart_224_normalized|smart_224_raw|smart_225_normalized|smart_225_raw|smart_226_normalized|smart_226_raw|smart_231_normalized|smart_231_raw|smart_232_normalized|smart_232_raw|smart_233_normalized|smart_233_raw|smart_235_normalized|smart_235_raw|smart_240_normalized|smart_240_raw|smart_241_normalized|smart_241_raw|smart_242_normalized|smart_242_raw|smart_250_normalized|smart_250_raw|smart_251_normalized|smart_251_raw|smart_252_normalized|smart_252_raw|smart_254_normalized|smart_254_raw|smart_255_normalized|smart_255_raw|\n",
+      "+----------+-------------+------------+--------------+-------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+\n",
+      "|2019-01-10|     ZA13YGBT| ST8000DM002| 8001563222016|      0|                75|   31436344|              null|       null|                94|          0|               100|          3|               100|          0|                96| 4183614448|              null|       null|                81|      17288|                100|           0|               null|        null|                100|           3|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  66|           34|                  84|        32626|                 100|            1|                  91|        18784|                  34|           34|                   1|     31436344|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        17170|                 100|  52829436336|                 100| 122996645254|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA142WEN|ST8000NM0055| 8001563222016|      0|                77|   47763808|              null|       null|                96|          0|               100|          3|               100|          0|                96| 3638476886|              null|       null|                82|      15849|                100|           0|               null|        null|                100|           3|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  67|           33|                  79|        43658|                 100|           12|                  92|        16889|                  33|           33|                  77|     47763808|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        15831|                 100|  49789822336|                 100| 108922330648|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA13Z860| ST8000DM002| 8001563222016|      0|                76|   43269128|              null|       null|                84|          0|               100|         24|               100|          0|                82|  157727328|              null|       null|                79|      18537|                100|           0|               null|        null|                100|          24|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  55|           45|                  94|        12790|                 100|            5|                  91|        19911|                  45|           45|                   1|     43269128|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        18491|                 100|  55858749376|                 100| 117795415922|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA18CEBS|ST8000NM0055| 8001563222016|      0|                83|  179266688|              null|       null|                97|          0|               100|          2|               100|          0|                95| 2856695953|              null|       null|                87|      11860|                100|           0|               null|        null|                100|           2|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  65|           35|                  93|        15311|                 100|            3|                  93|        14782|                  35|           35|                  83|    179266688|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        11834|                 100|  41653167136|                 100|  86962645068|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA12MLSD| ST8000DM002| 8001563222016|      0|               100|    1024392|              null|       null|                90|          0|               100|          5|               100|          0|                90|  950950694|              null|       null|                78|      19974|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  70|           30|                  96|         8683|                 100|            2|                  91|        19693|                  30|           30|                 100|      1024392|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        19927|                 100|  58569184576|                 100| 105219977294|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA18CEBF|ST8000NM0055| 8001563222016|      0|                81|  122110888|              null|       null|                96|          0|               100|          3|               100|          0|                95| 2824226747|              null|       null|                87|      11867|                100|           0|               null|        null|                100|           3|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  66|           34|                  98|         4734|                 100|            5|                  92|        16071|                  34|           34|                  81|    122110888|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        11842|                 100|  41737168632|                 100|  87664567816|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA1608EP|ST8000NM0055| 8001563222016|      0|                79|   74296112|              null|       null|                98|          0|               100|          2|               100|          0|                96| 3717345956|              null|       null|                82|      16110|                100|           0|               null|        null|                100|           2|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  70|           30|                  94|        13680|                 100|            8|                  95|        11746|                  30|           30|                  79|     74296112|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        16083|                 100|  50103162664|                 100| 122196829030|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA10JDYK| ST8000DM002| 8001563222016|      0|                83|  200283066|              null|       null|                90|          0|               100|          5|               100|          0|                94| 2308443034|              null|       null|                74|      23053|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  71|           29|                 100|            0|                 100|           52|                 100|          332|                  29|           29|                   1|    200283066|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        23044|                 100|  44599278000|                 100| 122150669064|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA181JVY|ST8000NM0055| 8001563222016|      0|                83|  220430480|              null|       null|                91|          0|               100|          7|               100|          0|                95| 2885423320|              null|       null|                85|      13159|                100|           0|               null|        null|                100|           6|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  71|           29|                  96|         8990|                 100|            7|                  93|        14627|                  29|           29|                  83|    220430480|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        13132|                 100|  43393191776|                 100| 105015520067|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA10RYB6| ST8000DM002| 8001563222016|      0|                84|  233614856|              null|       null|                90|          0|               100|          5|               100|          0|                93| 2141380377|              null|       null|                76|      21647|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  62|           38|                 100|            0|                 100|           41|                 100|          272|                  38|           38|                   1|    233614856|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        21364|                 100|  61516267536|                 100| 126710289350|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA12YPPQ| ST8000DM002| 8001563222016|      0|                83|  194975424|              null|       null|                96|          0|               100|          2|               100|          0|                96| 4228757904|              null|       null|                78|      19976|                100|           0|               null|        null|                100|           2|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  63|           37|                  91|        18682|                 100|            4|                  93|        14858|                  37|           37|                   1|    194975424|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        19940|                 100|  58610013440|                 100| 106166451952|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA10RYBE| ST8000DM002| 8001563222016|      0|                79|   77548200|              null|       null|                90|          0|               100|          5|               100|          0|                93| 2046024897|              null|       null|                76|      21648|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  58|           42|                 100|            0|                 100|           41|                 100|          826|                  42|           42|                   1|     77548200|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        21607|                 100|  60914912104|                 100| 122359509958|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA18CEB3|ST8000NM0055| 8001563222016|      0|                78|   60410808|              null|       null|                95|          0|               100|          4|               100|          0|                95| 2844223654|              null|       null|                87|      11866|                100|           0|               null|        null|                100|           4|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  69|           31|                  95|        11696|                 100|            3|                  92|        17545|                  31|           31|                  78|     60410808|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        11839|                 100|  41843776384|                 100|  86282620080|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA10RYBZ| ST8000DM002| 8001563222016|      0|                82|  142733488|              null|       null|                90|          0|               100|          5|               100|          0|                93| 2030043835|              null|       null|                76|      21648|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  63|           37|                 100|            0|                 100|           42|                 100|          263|                  37|           37|                   1|    142733488|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        21363|                 100|  61126839352|                 100| 107941402070|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA12KZ1X| ST8000DM002| 8001563222016|      0|                83|  199599320|              null|       null|                96|          0|               100|          2|               100|          0|                91| 1277567023|              null|       null|                76|      21647|                100|           0|               null|        null|                100|           2|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  65|           35|                  94|        12271|                 100|            1|                  93|        14068|                  35|           35|                   1|    199599320|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        21596|                 100|  61608837160|                 100| 106890769566|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA10RYBR| ST8000DM002| 8001563222016|      0|                82|  170890808|              null|       null|                90|          0|               100|          5|               100|          0|                93| 2033881168|              null|       null|                76|      21656|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  56|           44|                 100|            0|                 100|           43|                 100|          779|                  44|           44|                   1|    170890808|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        21618|                 100|  60328611192|                 100| 110808343574|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA130TTW| ST8000DM002| 8001563222016|      0|                83|  186475480|              null|       null|                96|          0|               100|          2|               100|          0|                87|  561002650|              null|       null|                78|      19976|                100|           0|               null|        null|                100|           2|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  71|           29|                  81|        38559|                 100|            0|                  91|        18567|                  29|           29|                   1|    186475480|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        19940|                 100|  58309562048|                 100| 106176826250|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA13Z86G| ST8000DM002| 8001563222016|      0|                81|  129002696|              null|       null|                91|          0|               100|          5|               100|          0|                96| 4065199630|              null|       null|                81|      17306|                100|           0|               null|        null|                100|           5|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  67|           33|                  98|         4327|                 100|            1|                  91|        18534|                  33|           33|                   1|    129002696|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        17231|                 100|  52625582336|                 100| 129628853678|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA18CEBT|ST8000NM0055| 8001563222016|      0|                79|   71016688|              null|       null|                96|          0|               100|          3|               100|          0|                95| 2876190640|              null|       null|                87|      11864|                100|           0|               null|        null|                100|           3|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  61|           39|                  92|        17743|                 100|            2|                  93|        15430|                  39|           39|                  79|     71016688|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        11841|                 100|  41621705592|                 100|  85641433142|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "|2019-01-10|     ZA13Z86F| ST8000DM002| 8001563222016|      0|                84|  231618592|              null|       null|                96|          0|               100|          2|               100|          0|                96| 3878152643|              null|       null|                81|      17303|                100|           0|               null|        null|                100|           2|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|               null|        null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|            0|                 100|            0|                 100|            0|                 100|            0|                  67|           33|                  96|         8389|                 100|            1|                  92|        17078|                  33|           33|                   1|    231618592|                null|         null|                 100|            0|                 100|            0|                 200|            0|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|                 100|        17234|                 100|  53483905104|                 100| 111459095880|                null|         null|                null|         null|                null|         null|                null|         null|                null|         null|\n",
+      "+----------+-------------+------------+--------------+-------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+------------------+-----------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+-------------------+------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+--------------------+-------------+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# c): Show the first 20 rows, sorted by (capacity descending, model ascending)\n",
+    "from pyspark.sql.functions import col, asc, desc, lit,avg\n",
+    "\n",
+    "df_sort = combined_df.orderBy(asc('model')).orderBy(desc('capacity_bytes')).limit(20)\n",
+    "\n",
+    "df_sort.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "9577046"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# d): Count the total number of rows\n",
+    "combined_df.count()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+--------------+-------+\n",
+      "|capacity_bytes|  count|\n",
+      "+--------------+-------+\n",
+      "|  500107862016| 174254|\n",
+      "|            -1|    993|\n",
+      "|  480036847616|    540|\n",
+      "| 4000787030016|3499483|\n",
+      "|10000831348736| 109800|\n",
+      "|14000519643136| 109378|\n",
+      "|12000138625024|3228204|\n",
+      "|  320072933376|    117|\n",
+      "| 2000398934016|    265|\n",
+      "| 5000981078016|   4050|\n",
+      "|  160041885696|    307|\n",
+      "|  137438952960|      1|\n",
+      "| 1000204886016|     90|\n",
+      "|  250059350016|    112|\n",
+      "| 6001175126016| 168482|\n",
+      "| 8001563222016|2280970|\n",
+      "+--------------+-------+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# e): Count the total number of rows, grouped by capacity\n",
+    "df_grouped_count = combined_df.groupBy(\"capacity_bytes\")\n",
+    "df_grouped_count.count().show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "DataFrame[summary: string, date: string, serial_number: string, model: string, capacity_bytes: string, failure: string, smart_1_normalized: string, smart_1_raw: string, smart_2_normalized: string, smart_2_raw: string, smart_3_normalized: string, smart_3_raw: string, smart_4_normalized: string, smart_4_raw: string, smart_5_normalized: string, smart_5_raw: string, smart_7_normalized: string, smart_7_raw: string, smart_8_normalized: string, smart_8_raw: string, smart_9_normalized: string, smart_9_raw: string, smart_10_normalized: string, smart_10_raw: string, smart_11_normalized: string, smart_11_raw: string, smart_12_normalized: string, smart_12_raw: string, smart_13_normalized: string, smart_13_raw: string, smart_15_normalized: string, smart_15_raw: string, smart_16_normalized: string, smart_16_raw: string, smart_17_normalized: string, smart_17_raw: string, smart_22_normalized: string, smart_22_raw: string, smart_23_normalized: string, smart_23_raw: string, smart_24_normalized: string, smart_24_raw: string, smart_168_normalized: string, smart_168_raw: string, smart_170_normalized: string, smart_170_raw: string, smart_173_normalized: string, smart_173_raw: string, smart_174_normalized: string, smart_174_raw: string, smart_177_normalized: string, smart_177_raw: string, smart_179_normalized: string, smart_179_raw: string, smart_181_normalized: string, smart_181_raw: string, smart_182_normalized: string, smart_182_raw: string, smart_183_normalized: string, smart_183_raw: string, smart_184_normalized: string, smart_184_raw: string, smart_187_normalized: string, smart_187_raw: string, smart_188_normalized: string, smart_188_raw: string, smart_189_normalized: string, smart_189_raw: string, smart_190_normalized: string, smart_190_raw: string, smart_191_normalized: string, smart_191_raw: string, smart_192_normalized: string, smart_192_raw: string, smart_193_normalized: string, smart_193_raw: string, smart_194_normalized: string, smart_194_raw: string, smart_195_normalized: string, smart_195_raw: string, smart_196_normalized: string, smart_196_raw: string, smart_197_normalized: string, smart_197_raw: string, smart_198_normalized: string, smart_198_raw: string, smart_199_normalized: string, smart_199_raw: string, smart_200_normalized: string, smart_200_raw: string, smart_201_normalized: string, smart_201_raw: string, smart_218_normalized: string, smart_218_raw: string, smart_220_normalized: string, smart_220_raw: string, smart_222_normalized: string, smart_222_raw: string, smart_223_normalized: string, smart_223_raw: string, smart_224_normalized: string, smart_224_raw: string, smart_225_normalized: string, smart_225_raw: string, smart_226_normalized: string, smart_226_raw: string, smart_231_normalized: string, smart_231_raw: string, smart_232_normalized: string, smart_232_raw: string, smart_233_normalized: string, smart_233_raw: string, smart_235_normalized: string, smart_235_raw: string, smart_240_normalized: string, smart_240_raw: string, smart_241_normalized: string, smart_241_raw: string, smart_242_normalized: string, smart_242_raw: string, smart_250_normalized: string, smart_250_raw: string, smart_251_normalized: string, smart_251_raw: string, smart_252_normalized: string, smart_252_raw: string, smart_254_normalized: string, smart_254_raw: string, smart_255_normalized: string, smart_255_raw: string]"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# f): Get the dataframe summary statistics\n",
+    "combined_df.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+----------+--------------------+--------------+\n",
+      "|      date|               model|capacity_bytes|\n",
+      "+----------+--------------------+--------------+\n",
+      "|2019-03-05|         ST4000DM000| 4000787030016|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|HGST HMS5C4040ALE640| 4000787030016|\n",
+      "|2019-03-05|        ST8000NM0055| 8001563222016|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|        ST8000NM0055| 8001563222016|\n",
+      "|2019-03-05|         ST4000DM000| 4000787030016|\n",
+      "|2019-03-05|         ST8000DM002| 8001563222016|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|        ST8000NM0055| 8001563222016|\n",
+      "|2019-03-05|       ST12000NM0007|12000138625024|\n",
+      "|2019-03-05|HGST HMS5C4040ALE640| 4000787030016|\n",
+      "|2019-03-05|HGST HMS5C4040BLE640| 4000787030016|\n",
+      "|2019-03-05|HGST HMS5C4040BLE640| 4000787030016|\n",
+      "|2019-03-05| TOSHIBA MG07ACA14TA|14000519643136|\n",
+      "|2019-03-05|HGST HMS5C4040BLE640| 4000787030016|\n",
+      "+----------+--------------------+--------------+\n",
+      "only showing top 20 rows\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# g): Select the following columns: date, model, capacity\n",
+    "df_select = combined_df.select(\"date\",\"model\",\"capacity_bytes\").limit(30)\n",
+    "df_select.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "49"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# h): Select the number of distinct models\n",
+    "combined_df.select('model').distinct().count()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+--------------+------------------+------+\n",
+      "|capacity_bytes|smart_1_normalized| count|\n",
+      "+--------------+------------------+------+\n",
+      "| 8001563222016|                76| 81712|\n",
+      "| 8001563222016|                60|     8|\n",
+      "|12000138625024|                84|250937|\n",
+      "|  500107862016|               119|     9|\n",
+      "| 4000787030016|                88|    22|\n",
+      "| 4000787030016|               115|136554|\n",
+      "|  500107862016|                77|   708|\n",
+      "|  320072933376|               113|     4|\n",
+      "| 6001175126016|                66|    15|\n",
+      "| 8001563222016|                51|     1|\n",
+      "| 4000787030016|                73|   106|\n",
+      "| 4000787030016|                97|   114|\n",
+      "|            -1|              null|   993|\n",
+      "|  500107862016|               149|     1|\n",
+      "| 6001175126016|                99|   103|\n",
+      "|10000831348736|                66|   437|\n",
+      "|  320072933376|               114|    11|\n",
+      "| 8001563222016|                62|    13|\n",
+      "| 4000787030016|                92|    59|\n",
+      "| 6001175126016|                64|     4|\n",
+      "+--------------+------------------+------+\n",
+      "only showing top 20 rows\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# i) : Calculate the pairwise frequency of this two columns (e.g. crosstab): capacity, smart_1_normalized\n",
+    "#After we group by both the columns, capacity_bytes and smart_1_normalized,\n",
+    "#we can run any aggregation function on the group which will return pairwise result.\n",
+    "\n",
+    "#Applying count aggregation on the group\n",
+    "combined_df.select('capacity_bytes','smart_1_normalized').groupBy('capacity_bytes','smart_1_normalized').count().write.csv('freq_pairs.csv')\n",
+    "combined_df.select('capacity_bytes','smart_1_normalized').groupBy('capacity_bytes','smart_1_normalized').count().show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+--------------------+\n",
+      "| avg(capacity_bytes)|\n",
+      "+--------------------+\n",
+      "|7.804058925479401E12|\n",
+      "+--------------------+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "#j) : Find the mean value of column capacity\n",
+    "mean_val_capacity_bytes = combined_df.select(avg('capacity_bytes'))\n",
+    "mean_val_capacity_bytes.show()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
